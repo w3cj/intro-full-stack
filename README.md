@@ -756,3 +756,191 @@ node server.js
 * Change to the `workspace/my-full-stack-app/server` directory.
 * Run the command: `npm start`
 * You should see `hello from node!` logged to the terminal.
+
+----
+
+### Exercise - Create an express server
+
+* Update the `server.js` file to include the following code:
+
+```js
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.json({
+        message: 'Hello from Node.js'
+    });
+});
+
+app.listen(5000, () => {
+    console.log('Server is listening on port 5000!');
+});
+```
+
+* Run the command: `npm run dev`
+* You should see the message in the console.
+* Visit `http://localhost:5000` in your browser
+* Make a GET request with postman to this address
+
+----
+
+### Back to the diagram
+
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/167545/images/1646308/the-web-simple.png">
+
+----
+
+### Exercise - Add express middlewares
+
+* Update the top of `server.js` to include:
+
+```js
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+
+const app = express();
+app.use(morgan('common'));
+app.use(cors());
+app.use(express.json());
+```
+
+----
+
+## HTTP Requests
+
+* Up until now, we have only made GET requests
+    * A GET request typically _just_ requests a page or data
+* A POST request allows the server to _receive_ data
+* There are many other HTTP methods including: GET, POST, PATCH, DELETE, HEAD, OPTIONS
+
+----
+
+### Exercise - Add a post route
+
+* In `server.js` add a post route below the middlewares:
+
+```js
+app.post('/create', (req, res) => {
+    res.json(req.body);
+});
+```
+
+* In postman make POST request to `http://localhost:5000/create` with the following body content:
+
+```json
+{
+	"name": "Your name here",
+	"content": "Your content here"
+}
+```
+
+----
+
+* In postman select: body -> raw -> choose json from the dropdown
+
+<img src="https://i.imgur.com/elyn9WJ.png" class="lg-img">
+
+* You should see the same body in the response!
+
+---
+
+# Databases!
+
+
+<img src="https://img.stackshare.io/service/5859/ne.jpg" class="med-img">
+
+----
+
+## Databases
+
+* Databases are used for _persistent_ storage
+* There are many different kinds of databases
+* NOSQL and SQL are common database types
+* We will store all of our messages in a database called `nedb-promises`!
+* This way, no matter when / where we visit the web site, the server will always have all the latest messages that can be served to the client
+
+----
+
+### Exercise - setup the database
+
+* In the `server.js` file at the top, add the following code:
+
+```js
+const nedb = require('nedb-promises')
+const db = nedb.create('data.db');
+```
+
+----
+
+### Exercise - Insert data into the database
+
+* Update the post route to insert the request body into the database
+
+```js
+app.post('/create', async (req, res) => {
+    const inserted = await db.insert(req.body);
+    res.json(inserted);
+});
+```
+
+* Make a POST request in postman again. This time you should see an _id in the response!
+
+----
+
+
+### Exercise - Validate the data before inserting
+
+* Update the post route to validate the request body before inserting:
+
+```js
+app.post('/create', async (req, res) => {
+    if (req.body.name
+        && req.body.name.toString() !== ''
+        && req.body.content
+        && req.body.content.toString() !== '') {
+        const inserted = await db.insert({
+            name: req.body.name.toString(),
+            content: req.body.content.toString()
+        });
+        res.json(inserted);
+    } else {
+        res.status(500);
+        res.json({
+            message: 'Name and content cannot be empty!'
+        });
+    }
+});
+```
+
+* Make a POST request in postman again. This time you should see an _id in the response!
+* Try making a POST request with no name or content. You should see the error!
+
+----
+
+## Exercise - List the messages in the database
+
+* Create a new GET route with the following code:
+
+```js
+app.get('/list', async (req, res) => {
+    const messages = await db.find();
+    res.json(messages);
+});
+
+* Make a GET request in Postman to `http://localhost:5000/list`
+* Also try visiting `http://localhost:5000/list` in the web browser. Does this work? If so, Why?
+```
+
+---
+
+# Back to the diagram
+
+---
+
+# Make POST requests with JavaScript in the Browser
+
+----
+
+* To be continued...
