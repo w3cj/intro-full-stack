@@ -1,0 +1,55 @@
+.reveal {
+  font-size: 1.7em !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #ef659f !important;
+}
+
+img {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+}
+
+.small-img {
+  width: auto !important;
+  height: 100px !important;
+}
+
+.med-img {
+  width: auto !important;
+  height: 200px !important;
+}
+
+.md-lg-img {
+  width: auto !important;
+  height: 250px !important;
+}
+
+.lg-img {
+  width: auto !important;
+  height: 500px !important;
+}
+
+.xl-img {
+  width: auto !important;
+  height: 600px !important;
+}
+
+
+pre code {
+  font-size: 2em !important;
+  line-height: 2em !important;
+}
+
+.dark-bg {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 1rem;
+}
