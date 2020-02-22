@@ -939,8 +939,154 @@ app.get('/list', async (req, res) => {
 
 ---
 
-# Make POST requests with JavaScript in the Browser
+# Make requests with fetch + JavaScript in the Browser
 
 ----
 
-* To be continued...
+* Similar to how we can make requests to the server with postman, we can make requests to the server with JavaScript!
+* `fetch` is built in to the web browser and allows us to make requests with JavaScript.
+
+----
+
+## Exercise - Make a POST request with JavaScript
+
+* In the `client.js` file, add the `async` keyword in front of the word function of the `formSubmitted` function, and add the following code at the end:
+
+```js
+async function formSubmitted(event) {
+    // lots of codes here
+    const message = {
+        name,
+        content
+    };
+    const url = 'http://localhost:5000/create';
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(message),
+    });
+    const json = await response.json();
+    console.log(json);
+}
+```
+
+----
+
+* Try entering and submitting a message on the page.
+* You should see the data logged to the console.
+
+----
+
+## Exercise - Show the form / hide the image
+
+* After a successful submission, it makes sense to hide the loading image and show the form again.
+* At the end of the `formSubmitted` function add the following code:
+
+```js
+form.style.display = 'block'; // show the form
+loadingImage.style.display = 'none'; // show the image
+```
+
+----
+
+### Exercise - Create a place in the HTML to list the messages
+
+* In the `index.html` file, below the form, create a div with the `id` messages:
+
+```html
+<div id="messages"></div>
+```
+
+----
+
+### Exercise - Select an element by ID with JavaScript
+
+* In the `client.js` file, at the top, select the messages div and store it in a variable called messagesElement:
+
+```js
+const messagesElement = document.querySelector('#messages');
+```
+
+* We will use this variable in the next exercise to list the messages on the page.
+
+----
+
+### Exercise - List all of the messages on the page
+
+* In the `client.js` file, add the following function:
+
+```js
+async function listMessages() {
+    messagesElement.innerHTML = ''; // Clear the existing messages
+    loadingImage.style.display = 'block'; // show the loading image
+    const url = 'http://localhost:5000/list';
+    const response = await fetch(url);
+    const messages = await response.json();
+    for (let i = 0; i < messages.length; i++) {
+        const message = messages[i];
+        const messageDiv = document.createElement('div');
+
+        const nameElement = document.createElement('h3');
+        nameElement.textContent = message.name;
+        messageDiv.appendChild(nameElement);
+
+        const contentElement = document.createElement('p');
+        contentElement.textContent = message.content;
+        messageDiv.appendChild(contentElement);
+
+        messagesElement.appendChild(messageDiv);
+    }
+    loadingImage.style.display = 'none'; // hide the loading image
+}
+```
+
+----
+
+### Exercise - Call the listMessages function
+
+* At the bottom of the `client.js` file, call the `listMessages` function:
+
+```js
+listMessages();
+```
+
+* Now when the page loads, you should see all of the messages on the page!
+
+----
+
+### Exercise - Style the messages
+
+* Add the following CSS to the `styles.css` file to center the messages:
+
+```css
+#messages {
+    display: block;
+    margin: 1rem auto;
+    width: 50%;
+}
+```
+
+----
+
+### Exercise - List the messages after creating a new message
+
+* At the end of the `formSubmitted` function, call the `listMessages` function:
+
+```js
+async function formSubmitted(event) {
+    // lots of codes here
+    listMessages();
+}
+```
+
+* Now, after the form is submitted, you should see the new message on the page!
+
+---
+
+# RECAP
+
+---
+
+### Thanks!
